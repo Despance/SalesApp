@@ -1,21 +1,18 @@
-package com.despance.salesapp.fragments;
+package com.despance.salesapp.view;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.despance.salesapp.R;
 import com.despance.salesapp.data.Product;
 import com.despance.salesapp.data.ProductDBHelper;
 import com.despance.salesapp.databinding.FragmentProductBinding;
-import com.despance.salesapp.databinding.RecyclerViewAdapterBinding;
-import com.despance.salesapp.view.RecyclerViewAdapter;
+import com.despance.salesapp.adapter.RecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,15 +46,14 @@ public class ProductFragment extends Fragment {
          */
         _binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         _binding.recyclerView.setHasFixedSize(true);
+
         List<Product> products = dbHelper.getAllProducts();
-
-        for (Product product : products){
-            Log.d("PRODUCT","Id:"+product.getId()+ " Product Name: " + product.getProductName() + " Price: " + product.getPrice() + " Vat Rate: " + product.getVatRate() + " Barcode: " + product.getBarcode());
-        }
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(getContext(), new ArrayList<Product>(products));
-
-        Log.d("PRODUCT","RecyclerView Created");
         _binding.recyclerView.setAdapter(adapter);
+
+
+
+
         super.onCreate(savedInstanceState);
 
     }

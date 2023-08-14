@@ -1,8 +1,9 @@
-package com.despance.salesapp.view;
+package com.despance.salesapp.adapter;
 
 import static androidx.recyclerview.widget.RecyclerView.*;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,12 +54,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return _products.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements OnClickListener{
 
         RecyclerViewAdapterBinding _binding;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             _binding = RecyclerViewAdapterBinding.bind(itemView);
+            itemView.setOnClickListener(this);
+        }
+
+
+        @Override
+        public void onClick(View view) {
+            Log.d("PRODUCT", "Product selected: "+ _products.get(getAdapterPosition()).getProductName());
         }
     }
 }

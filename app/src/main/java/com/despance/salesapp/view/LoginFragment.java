@@ -1,19 +1,16 @@
-package com.despance.salesapp.fragments;
+package com.despance.salesapp.view;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.NavGraph;
 import androidx.navigation.Navigation;
 
 
-import android.os.Debug;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.database.sqlite.SQLiteDatabase;
 import android.view.inputmethod.EditorInfo;
 
 import com.despance.salesapp.R;
