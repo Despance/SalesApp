@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
+    android:label="Cart"
     app:startDestination="@id/LoginFragment">
 
     <fragment
@@ -24,5 +25,17 @@
         <action
             android:id="@+id/product_to_login"
             app:destination="@id/LoginFragment" />
+        <action
+            android:id="@+id/action_ProductFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.despance.salesapp.view.CartFragment"
+        android:label="Cart 🛒"
+        tools:layout="@layout/fragment_cart">
+        <action
+            android:id="@+id/action_cartFragment_to_ProductFragment"
+            app:destination="@id/ProductFragment" />
     </fragment>
 </navigation>

@@ -13,8 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
+import com.despance.salesapp.MainActivity;
 import com.despance.salesapp.R;
-import com.despance.salesapp.data.DatabaseHelper;
 import com.despance.salesapp.data.User;
 import com.despance.salesapp.databinding.FragmentLoginBinding;
 
@@ -24,7 +24,10 @@ public class LoginFragment extends Fragment {
     private String _email;
     private String _password;
 
-    private DatabaseHelper dbHelper;
+    private User.DatabaseHelper dbHelper;
+
+
+
 
 
     public LoginFragment() {
@@ -43,10 +46,10 @@ public class LoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         _binding = FragmentLoginBinding.inflate(getLayoutInflater());
 
-        dbHelper = new DatabaseHelper(getContext());
+        dbHelper = new User.DatabaseHelper(getContext());
 
-        dbHelper.addUser(new User("despance1927@gmail.com", "123456", "Mustafa Emir", "Uyar"));
-        dbHelper.addUser(new User("abc", "123456", "Mustafa Demir", "Uyar"));
+        //dbHelper.addUser(new User("despance1927@gmail.com", "123456", "Mustafa Emir", "Uyar"));
+        //dbHelper.addUser(new User("abc", "123456", "Mustafa Emir", "Uyar"));
         for (User user : dbHelper.getAllUsers()) {
             Log.d("USER","Id:"+user.getId()+ "Email: " + user.getEmail() + " Password: " + user.getPassword() + " First Name: " + user.getFirstName() + " Last Name: " + user.getLastName());
         }
@@ -65,7 +68,15 @@ public class LoginFragment extends Fragment {
             Log.println(Log.DEBUG, "LOGIN", "Login button clicked");
             _email = _binding.emailTextView.getEditText().getText().toString();
             _password = _binding.passwordTextView.getEditText().getText().toString();
-            _binding.passwordTextView.getEditText().onEditorAction(EditorInfo.IME_ACTION_DONE);
+            //_binding.passwordTextView.getEditText().onEditorAction(EditorInfo.IME_ACTION_DONE);
+            _binding.passwordTextView.getEditText().setOnEditorActionListener((v, actionId, event) -> {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    _binding.loginButton.performClick();
+                    return true;
+                }
+                return false;
+            });
+
 
             if(_email.isEmpty()){
                 _binding.emailTextView.setError("Email is required");
@@ -92,7 +103,10 @@ public class LoginFragment extends Fragment {
                 if (loginUser != null){
                     Log.e("LOGIN", "Login successful");
                     NavController navController = Navigation.findNavController(view);
-                    navController.navigate(R.id.login_to_product);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("username", loginUser.getFirstName());
+                    bundle.putInt("id", loginUser.getId());
+                    navController.navigate(R.id.login_to_product, bundle);
                 }else{
                     Log.e("LOGIN", "Login failed");
                     _binding.passwordTextView.setError("Email or password is incorrect");

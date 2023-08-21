@@ -1,10 +1,24 @@
-package com.despance.salesapp.data;
+package com.despance.salesapp.modal.Product;
 
+
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+
+@Entity(tableName = "products")
 public class Product {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     private int id;
+
+    @ColumnInfo(name = "productName")
     private String productName;
+    @ColumnInfo(name = "price")
     private float price;
+    @ColumnInfo(name = "vatRate")
     private float vatRate;
+    @ColumnInfo(name = "barcode")
     private String barcode;
 
     public Product(String productName, float price, float vatRate, String barcode) {
