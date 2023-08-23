@@ -29,16 +29,13 @@ public class ProductFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         _binding = FragmentProductBinding.inflate(getLayoutInflater());
+        cartItemViewModel = new ViewModelProvider(this).get(CartItemViewModel.class);
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("com.despance.salesapp", getActivity().MODE_PRIVATE);
 
-        String userName = getArguments() != null ? "Welcome "+getArguments().getString("username") : "Error";
+
         int loginId = getArguments() != null ? getArguments().getInt("id") : 0;
         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-
-        navController.getGraph().findNode(R.id.ProductFragment).setLabel(userName);
-
-        ((MainActivity)getActivity()).setActionBarTitle(userName);
 
         //Empty the cart if a new user login
         if (loginId != sharedPreferences.getInt("id",-1))

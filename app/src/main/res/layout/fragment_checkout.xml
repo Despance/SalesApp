@@ -127,6 +127,8 @@
         app:cardBackgroundColor="@color/cardview_light_background"
         app:cardUseCompatPadding="true"
         app:contentPadding="2dp"
+        app:contentPaddingLeft="16dp"
+        app:contentPaddingRight="16dp"
         app:layout_constraintBottom_toTopOf="@+id/creditCartButton"
         tools:layout_editor_absoluteX="0dp">
 
@@ -135,6 +137,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center|right"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textSize="20sp" />
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
