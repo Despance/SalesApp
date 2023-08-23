@@ -11,24 +11,21 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.despance.salesapp.modal.CartItem.CartItem;
 import com.despance.salesapp.modal.Product.Product;
 import com.despance.salesapp.databinding.ProductRecyclerViewBinding;
-
 import com.despance.salesapp.viewModal.CartItemViewModel;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecyclerViewAdapter.ViewHolder> {
 
     private List<Product> _products;
-    private Context context;
+    private final Context context;
 
     List<CartItem> cartItems = new ArrayList<>();
-    private CartItemViewModel cartItemViewModel;
+    private final CartItemViewModel cartItemViewModel;
 
 
 
@@ -40,7 +37,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
     public void setProducts(List<Product> products){
         _products = products;
-        notifyDataSetChanged();
     }
 
 
@@ -63,10 +59,9 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Product product = _products.get(position);
 
-
         holder._binding.productNameTextView.setText(product.getProductName());
-        holder._binding.priceTextView.setText(String.format("Price: %s", String.valueOf(product.getPrice())));
-        holder._binding.vatRateTextView.setText(String.format("VAT Rate: %s%%", String.valueOf(product.getVatRate() * 100)));
+        holder._binding.priceTextView.setText(String.format("Price: %s", product.getPrice()));
+        holder._binding.vatRateTextView.setText(String.format("VAT Rate: %s%%", product.getVatRate() * 100));
         holder._binding.barcodeTextView.setText(String.format("Barcode Number\n %s", product.getBarcode()));
 
     }
@@ -97,7 +92,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
 
             boolean itemFound =false;
             for (CartItem cartItem: cartItems) {
-                Log.d("PRODUCT", "Product in cart: "+ cartItem.getProduct().getId());
                 if (cartItem.getProduct().getId() == selectedProduct.getId()) {
                         Log.d("PRODUCT", "Product already in cart, incremented by 1: "+ selectedProduct.getProductName());
                         cartItemViewModel.updateCartItem(cartItem.getId(), cartItem.getQuantity() + 1);

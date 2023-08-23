@@ -5,20 +5,18 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.despance.salesapp.modal.CartItem.CartItem;
 import com.despance.salesapp.modal.CartItem.CartItemRepository;
 import com.despance.salesapp.modal.Product.Product;
-import com.google.gson.Gson;
 
 import java.util.List;
 
 
 public class CartItemViewModel extends AndroidViewModel {
-    private CartItemRepository cartItemRepository;
+    private final CartItemRepository cartItemRepository;
 
-    private LiveData<List<CartItem>> allProducts;
+    private final LiveData<List<CartItem>> allProducts;
     public CartItemViewModel(@NonNull Application application){
         super(application);
         cartItemRepository = new CartItemRepository(application);

@@ -14,9 +14,8 @@ import java.util.concurrent.Executors;
 public abstract class ProductDatabase extends RoomDatabase {
 
     public abstract ProductDao productDao();
-
     private static volatile ProductDatabase INSTANCE;
-    private static final int NUMBER_OF_THREADS = 4;
+    private static final int NUMBER_OF_THREADS = 1;
     static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 

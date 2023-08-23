@@ -11,7 +11,6 @@ public class Product {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int id;
-
     @ColumnInfo(name = "productName")
     private String productName;
     @ColumnInfo(name = "price")

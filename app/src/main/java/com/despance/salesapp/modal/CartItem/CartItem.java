@@ -8,8 +8,6 @@ import androidx.room.TypeConverters;
 import com.despance.salesapp.data.Converters;
 import com.despance.salesapp.modal.Product.Product;
 
-
-
 @Entity(tableName = "cartItems")
 public class CartItem {
 
@@ -27,9 +25,8 @@ public class CartItem {
     @ColumnInfo(name = "timeAdded")
     private long timeAdded;
 
-    public CartItem(){
-
-    };
+    public CartItem() {
+    }
     public CartItem(Product cartItem, int quantity) {
 
         this.product = cartItem;

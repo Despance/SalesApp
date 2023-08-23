@@ -8,8 +8,8 @@ import java.util.List;
 
 public class ProductRepository {
 
-    private ProductDao productDao;
-    private LiveData<List<Product>> allProducts;
+    private final ProductDao productDao;
+    private final LiveData<List<Product>> allProducts;
 
     public ProductRepository(Application application) {
         ProductDatabase db = ProductDatabase.getDatabase(application);
@@ -22,9 +22,7 @@ public class ProductRepository {
     }
 
     public void insert(Product product) {
-        ProductDatabase.databaseWriteExecutor.execute(() -> {
-            productDao.insert(product);
-        });
+        ProductDatabase.databaseWriteExecutor.execute(() -> productDao.insert(product));
     }
 
     public Product getProductByBarcode(String barcode) {
