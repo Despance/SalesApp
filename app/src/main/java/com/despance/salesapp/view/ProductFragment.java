@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.despance.salesapp.MainActivity;
+import com.despance.salesapp.modal.Product.Product;
 import com.despance.salesapp.modal.ProductDBHelper;
 import com.despance.salesapp.databinding.FragmentProductBinding;
 import com.despance.salesapp.adapter.ProductRecyclerViewAdapter;
@@ -53,13 +55,14 @@ public class ProductFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("com.despance.salesapp", getActivity().MODE_PRIVATE);
 
 
-        Log.d("LOGIN","Login id : "+loginId+" Shared id : "+sharedPreferences.getInt("id",-1));
+        ((MainActivity)getActivity()).setActionBarTitle("Welcome " + userName);
+
+
 
         if (loginId != sharedPreferences.getInt("id",-1)){
             cartItemViewModel.deleteAll();
             Log.d("LOGIN","Login id is not same deleted all cart items");
         }else {
-
             Log.d("LOGIN","Login id is same");
         }
 
@@ -81,7 +84,7 @@ public class ProductFragment extends Fragment {
 
          */
 
-        /*
+
         productViewModel.insert(new Product("Coca Cola", 30, 0.18f, "8690536000012"));
         productViewModel.insert(new Product("Fanta", 25, 0.18f, "8690536000022"));
         productViewModel.insert(new Product("Sprite", 20, 0.18f, "8690536000032"));
@@ -90,7 +93,7 @@ public class ProductFragment extends Fragment {
         productViewModel.insert(new Product("Soda", 10, 0.18f, "8690536000112"));
         productViewModel.insert(new Product("Ayran", 5, 0.18f, "8690536000062"));
         productViewModel.insert(new Product("Süt", 7, 0.18f, "8690536000072"));
-         */
+
 
 
         _binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -104,11 +107,6 @@ public class ProductFragment extends Fragment {
                 navController.navigate(com.despance.salesapp.R.id.action_ProductFragment_to_cartFragment);
             }
         });
-
-
-
-
-
 
         super.onCreate(savedInstanceState);
 

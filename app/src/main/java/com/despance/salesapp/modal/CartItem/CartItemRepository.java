@@ -3,6 +3,7 @@ package com.despance.salesapp.modal.CartItem;
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.despance.salesapp.modal.Product.Product;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public class CartItemRepository {
 
     private CartItemDao cartItemDao;
-    LiveData<List<CartItem>> allCartItems;
+    private LiveData<List<CartItem>> allCartItems;
 
     public CartItemRepository(Application application){
         CartItemDatabase db = CartItemDatabase.getDatabase(application);

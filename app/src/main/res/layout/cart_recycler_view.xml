@@ -4,13 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    android:padding="16dp">
+    android:layout_margin="8dp"
+    android:backgroundTint="@color/lightPrimary"
+    android:paddingLeft="16dp"
+    android:paddingTop="2dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="2dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardElevation="8dp"
+        android:layout_height="80dp"
+        android:backgroundTint="@color/lightPrimary"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,6 +31,7 @@
                 android:id="@+id/cartProductNameTextView"
                 android:layout_width="157dp"
                 android:layout_height="24dp"
+                android:layout_marginStart="16dp"
                 android:text="PRODUCT NAME"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -34,12 +41,12 @@
                 android:id="@+id/quantitiyTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="64dp"
+                android:layout_marginEnd="120dp"
                 android:text="0"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/cartProductNameTextView"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.5" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/totalPriceTextView"
@@ -53,9 +60,9 @@
 
             <ImageView
                 android:id="@+id/decrementButton"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="2dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/quantitiyTextView"
                 app:layout_constraintTop_toTopOf="parent"
@@ -63,9 +70,9 @@
 
             <ImageView
                 android:id="@+id/incrementButton"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="2dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/quantitiyTextView"
                 app:layout_constraintTop_toTopOf="parent"

@@ -27,7 +27,9 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
 
     private CartRecyclerViewBinding _binding;
 
-
+    public static HashMap<Integer, Product> getProducts() {
+        return products;
+    }
 
     public CartRecyclerViewAdapter(List<CartItem> cartItems, CartItemViewModel cartItemViewModel){
         _cartItems = cartItems;
@@ -56,12 +58,13 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
         _binding = CartRecyclerViewBinding.bind(holder.itemView);
 
 
-        Product currentProduct = products.get(_cartItems.get(position).getProductId());
+
+        Product currentProduct = _cartItems.get(position).getProduct();
         if(currentProduct == null)
             currentProduct = new Product("DENEME",12,12,"abc");
         _binding.cartProductNameTextView.setText(currentProduct.getProductName());
         _binding.quantitiyTextView.setText(String.valueOf(_cartItems.get(position).getQuantity()));
-        _binding.totalPriceTextView.setText(String.valueOf(_cartItems.get(position).getQuantity() * currentProduct.getPrice()));
+        _binding.totalPriceTextView.setText(String.valueOf(_cartItems.get(position).getQuantity() * _cartItems.get(position).getProduct().getPrice()));
 
         _binding.decrementButton.setOnClickListener(v -> {
             if(_cartItems.get(position).getQuantity() > 1){
@@ -69,12 +72,17 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerVi
                 cartItemViewModel.updateCartItem(_cartItems.get(position).getId(),_cartItems.get(position).getQuantity());
             }else
                 cartItemViewModel.deleteById(_cartItems.get(position).getId());
+
+            v.startAnimation(android.view.animation.AnimationUtils.loadAnimation(v.getContext(), R.anim.anim_item));
         });
 
         _binding.incrementButton.setOnClickListener(v -> {
             _cartItems.get(position).setQuantity(_cartItems.get(position).getQuantity()+1);
             cartItemViewModel.updateCartItem(_cartItems.get(position).getId(),_cartItems.get(position).getQuantity());
+            v.startAnimation(android.view.animation.AnimationUtils.loadAnimation(v.getContext(), R.anim.anim_item));
         });
+
+
 
 
         Log.d("CartRecyclerViewAdapter", "Product created: " + currentProduct.getProductName());

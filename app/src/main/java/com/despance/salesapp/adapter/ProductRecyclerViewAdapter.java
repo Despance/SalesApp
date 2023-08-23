@@ -27,8 +27,10 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     private List<Product> _products;
     private Context context;
 
-    List<CartItem> cartItems;
+    List<CartItem> cartItems = new ArrayList<>();
     private CartItemViewModel cartItemViewModel;
+
+
 
     public ProductRecyclerViewAdapter(Context context, List<Product> products, CartItemViewModel cartItemViewModel){
         _products = products;
@@ -47,8 +49,9 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View w = LayoutInflater.from(parent.getContext()).inflate(com.despance.salesapp.R.layout.product_recycler_view, parent, false);
-         cartItems = new ArrayList<>();
+
         cartItemViewModel.getAllProducts().observe((LifecycleOwner) context, cartItems1 -> {
+            cartItems.clear();
             cartItems.addAll(cartItems1);
         });
 
@@ -90,11 +93,12 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
         public void onClick(View view) {
             Product selectedProduct = _products.get(getAdapterPosition());
 
-
+            view.startAnimation(android.view.animation.AnimationUtils.loadAnimation(context, com.despance.salesapp.R.anim.click));
 
             boolean itemFound =false;
             for (CartItem cartItem: cartItems) {
-                if (cartItem.getProductId() == selectedProduct.getId()) {
+                Log.d("PRODUCT", "Product in cart: "+ cartItem.getProduct().getId());
+                if (cartItem.getProduct().getId() == selectedProduct.getId()) {
                         Log.d("PRODUCT", "Product already in cart, incremented by 1: "+ selectedProduct.getProductName());
                         cartItemViewModel.updateCartItem(cartItem.getId(), cartItem.getQuantity() + 1);
                         itemFound = true;
@@ -106,11 +110,6 @@ public class ProductRecyclerViewAdapter extends RecyclerView.Adapter<ProductRecy
                 cartItemViewModel.insert(selectedProduct);
 
             }
-
-
-
-
-            itemView.requestFocusFromTouch();
 
         }
     }
