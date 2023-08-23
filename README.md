@@ -53,10 +53,12 @@ Welcome to Phase 1 of the Sales App project! This Android app, developed in Java
 
 ## Screenshots
 
-![Login Screen](screenshots/login_screen.png)
-![Product Listing](screenshots/product_listing.png)
-![Cart](screenshots/cart.png)
-![Purchase](screenshots/purchase.png)
+<div style="display: flex; flex-direction: row;">
+  <img src="screenshots/login_screen.jpg" alt="Login Screen" width="200"/>
+  <img src="screenshots/product_listing.jpg" alt="Product Listing" width="200"/>
+  <img src="screenshots/cart.jpg" alt="Cart" width="200"/>
+  <img src="screenshots/purchase.jpg" alt="Purchase" width="200"/>
+</div>
 
 ## How to Use
 
