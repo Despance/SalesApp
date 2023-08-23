@@ -95,9 +95,6 @@ public class CheckoutFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
-
         return _binding.getRoot();
     }
 }
