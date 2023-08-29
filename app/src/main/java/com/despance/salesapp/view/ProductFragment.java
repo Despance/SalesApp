@@ -56,6 +56,9 @@ public class ProductFragment extends Fragment {
         } );
         _binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         _binding.recyclerView.setHasFixedSize(true);
+
+
+
         /*
         productViewModel.insert(new Product("Coca Cola", 30, 0.18f, "8690536000012"));
         productViewModel.insert(new Product("Fanta", 25, 0.18f, "8690536000022"));
