@@ -2,6 +2,37 @@
 
 Welcome to Phase 1 of the Sales App project! This Android app, developed in Java, allows users to explore products, manage their cart, and complete purchases using various payment methods.
 
+
+### Payment Methods
+- **Barcode**
+- **Cash**
+- **Credit Card**
+
+## Screenshots
+
+<div style="display: flex; flex-direction: row;">
+  <img src="screenshots/login_screen.jpg" alt="Login Screen" width="200"/>
+  <img src="screenshots/product_listing.jpg" alt="Product Listing" width="200"/>
+  <img src="screenshots/cart.jpg" alt="Cart" width="200"/>
+  <img src="screenshots/purchase.jpg" alt="Purchase" width="200"/>
+</div>
+
+## How to Use
+
+1. **Login**: Upon launching the app, users are prompted to log in using their credentials.
+
+2. **Product Listing**: After logging in, users are presented with a list of available products. They can click on a product to view its details.
+
+3. **Cart**: Users can add products to the cart by clicking on the "Add to Cart" button. They can also adjust the quantity of items and remove products from the cart.
+
+4. **Purchase**: To complete a purchase, users can navigate to the cart and click on the "Purchase" button. They will be directed to the payment screen.
+
+5. **Payment**: On the payment screen, users can choose from three payment options: Barcode, Cash, or Credit Card. The total price of the items in the cart is displayed.
+
+6. **Empty Cart**: Users can choose to empty the cart by clicking on the "Empty Cart" button.
+
+
+
 ## Technologies Used
 
 ### Programming Language
@@ -16,11 +47,6 @@ Welcome to Phase 1 of the Sales App project! This Android app, developed in Java
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/MVVMPattern.png/500px-MVVMPattern.png" alt="Java" width="500"/>
 
 - **MVVM**
-
-### Payment Methods
-- **Barcode**
-- **Cash**
-- **Credit Card**
 
 ### Version Control
 <img src= "https://git-scm.com/images/logos/downloads/Git-Logo-2Color.png" alt="Java" width="100"/>
@@ -51,26 +77,6 @@ Welcome to Phase 1 of the Sales App project! This Android app, developed in Java
 
 4. Build and run the app on an emulator or a physical device.
 
-## Screenshots
-
-![Login Screen](screenshots/login_screen.png)
-![Product Listing](screenshots/product_listing.png)
-![Cart](screenshots/cart.png)
-![Purchase](screenshots/purchase.png)
-
-## How to Use
-
-1. **Login**: Upon launching the app, users are prompted to log in using their credentials.
-
-2. **Product Listing**: After logging in, users are presented with a list of available products. They can click on a product to view its details.
-
-3. **Cart**: Users can add products to the cart by clicking on the "Add to Cart" button. They can also adjust the quantity of items and remove products from the cart.
-
-4. **Purchase**: To complete a purchase, users can navigate to the cart and click on the "Purchase" button. They will be directed to the payment screen.
-
-5. **Payment**: On the payment screen, users can choose from three payment options: Barcode, Cash, or Credit Card. The total price of the items in the cart is displayed.
-
-6. **Empty Cart**: Users can choose to empty the cart by clicking on the "Empty Cart" button.
 
 ## Contributing
 
