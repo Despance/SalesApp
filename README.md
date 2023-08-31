@@ -71,7 +71,7 @@ Welcome to Phase 1 of the Sales App project! This Android app, developed in Java
 
 1. Clone the repository:
 
-2. 2. Open the project in Android Studio.
+2. Open the project in Android Studio.
 
 3. Set up the necessary dependencies, including Room, RecyclerView, and any other required libraries.
 
