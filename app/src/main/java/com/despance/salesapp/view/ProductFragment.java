@@ -13,12 +13,11 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.despance.salesapp.MainActivity;
 import com.despance.salesapp.R;
 import com.despance.salesapp.adapter.ProductRecyclerViewAdapter;
 import com.despance.salesapp.databinding.FragmentProductBinding;
-import com.despance.salesapp.viewModal.CartItemViewModel;
-import com.despance.salesapp.viewModal.ProductViewModel;
+import com.despance.salesapp.viewModel.CartItemViewModel;
+import com.despance.salesapp.viewModel.ProductViewModel;
 
 public class ProductFragment extends Fragment {
     private FragmentProductBinding _binding;

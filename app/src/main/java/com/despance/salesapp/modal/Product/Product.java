@@ -3,6 +3,7 @@ package com.despance.salesapp.modal.Product;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 
@@ -25,6 +26,11 @@ public class Product {
         this.price = price;
         this.vatRate = vatRate;
         this.barcode = barcode;
+    }
+    @Ignore
+    public Product(Integer id, String productName, float price, float vatRate, String barcode) {
+        this(productName, price, vatRate, barcode);
+        this.id = id;
     }
 
     public int getId() {
@@ -65,5 +71,16 @@ public class Product {
 
     public void setBarcode(String barcode) {
         this.barcode = barcode;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", productName='" + productName + '\'' +
+                ", price=" + price +
+                ", vatRate=" + vatRate +
+                ", barcode='" + barcode + '\'' +
+                '}';
     }
 }

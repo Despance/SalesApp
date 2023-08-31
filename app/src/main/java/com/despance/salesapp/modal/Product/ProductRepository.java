@@ -29,6 +29,9 @@ public class ProductRepository {
         return productDao.getProductByBarcode(barcode);
     }
 
+    public void deleteAll() {
+        ProductDatabase.databaseWriteExecutor.execute(productDao::deleteAll);
+    }
     public Product getProductById(int id) {
         return productDao.getProductById(id);
     }

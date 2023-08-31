@@ -1,4 +1,4 @@
-package com.despance.salesapp.viewModal;
+package com.despance.salesapp.viewModel;
 
 import android.app.Application;
 

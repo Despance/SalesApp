@@ -17,7 +17,7 @@ import com.despance.salesapp.R;
 import com.despance.salesapp.adapter.CartRecyclerViewAdapter;
 import com.despance.salesapp.modal.CartItem.CartItem;
 import com.despance.salesapp.databinding.FragmentCartBinding;
-import com.despance.salesapp.viewModal.CartItemViewModel;
+import com.despance.salesapp.viewModel.CartItemViewModel;
 
 
 import java.util.ArrayList;

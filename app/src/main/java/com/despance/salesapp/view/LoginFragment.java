@@ -57,13 +57,8 @@ public class LoginFragment extends Fragment {
         });
 
         _binding.connectDBButton.setOnClickListener(v -> {
-
-            Thread thread = new Thread(() -> {
-                String message = connectToDatabase("192.168.50.3",25565);
-                getActivity().runOnUiThread(() -> Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show());
-
-            });
-            thread.start();
+            ServerFragment serverFragment = new ServerFragment();
+            serverFragment.show(getParentFragmentManager(), "ServerFragment");
         });
         _binding.loginButton.setOnClickListener(view -> onLoginClick(view));
 
@@ -105,19 +100,7 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private String connectToDatabase(String address, int port) {
-        Socket socket = null;
-        try {
-            socket = new Socket(address, port);
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            return in.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
-
-    }
 
 
 }

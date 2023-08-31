@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.despance.salesapp.R;
 import com.despance.salesapp.data.User;
-import com.despance.salesapp.viewModal.ProductViewModel;
+import com.despance.salesapp.viewModel.ProductViewModel;
 
 public class AdminFragment extends Fragment {
 

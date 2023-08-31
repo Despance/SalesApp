@@ -38,8 +38,10 @@ public class User {
         this.lastName = lastName;
     }
 
-
-
+    public User(int id, String email, String password, String firstName, String lastName){
+        this(email, password, firstName, lastName);
+        this.id = id;
+    }
     public int getId() {
         return id;
     }
@@ -78,6 +80,17 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 
 
@@ -174,6 +187,12 @@ public class User {
                 }while (cursor.moveToNext());
             }
             return null;
+        }
+
+        public void deleteAll() {
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.execSQL("delete from "+ TABLE_NAME);
+            db.close();
         }
     }
 }

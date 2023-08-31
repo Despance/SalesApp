@@ -9,7 +9,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import com.despance.salesapp.R;
 import com.despance.salesapp.adapter.OrderSummaryRecyclerViewAdapter;
 import com.despance.salesapp.databinding.FragmentCheckoutBinding;
 import com.despance.salesapp.modal.CartItem.CartItem;
-import com.despance.salesapp.viewModal.CartItemViewModel;
+import com.despance.salesapp.viewModel.CartItemViewModel;
 
 public class CheckoutFragment extends Fragment {
 

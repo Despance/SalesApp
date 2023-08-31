@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.despance.salesapp.modal.CartItem.CartItem;
 import com.despance.salesapp.modal.Product.Product;
 import com.despance.salesapp.databinding.ProductRecyclerViewBinding;
-import com.despance.salesapp.viewModal.CartItemViewModel;
+import com.despance.salesapp.viewModel.CartItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

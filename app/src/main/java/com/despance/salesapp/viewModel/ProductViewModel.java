@@ -1,4 +1,4 @@
-package com.despance.salesapp.viewModal;
+package com.despance.salesapp.viewModel;
 
 import android.app.Application;
 
@@ -34,6 +34,9 @@ public class ProductViewModel extends AndroidViewModel {
         return productRepository.getProductById(id);
     }
 
+    public void deleteAll(){
+        productRepository.deleteAll();
+    }
     public void insert(Product product) {
         productRepository.insert(product);
     }

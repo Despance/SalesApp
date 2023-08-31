@@ -11,7 +11,7 @@ import com.despance.salesapp.R;
 import com.despance.salesapp.modal.CartItem.CartItem;
 import com.despance.salesapp.modal.Product.Product;
 import com.despance.salesapp.databinding.CartRecyclerViewBinding;
-import com.despance.salesapp.viewModal.CartItemViewModel;
+import com.despance.salesapp.viewModel.CartItemViewModel;
 
 import java.util.List;
 
