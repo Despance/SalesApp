@@ -3,32 +3,28 @@ package com.despance.salesapp.view;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.despance.salesapp.R;
 import com.despance.salesapp.data.User;
-import com.despance.salesapp.databinding.FragmentQRBinding;
 import com.despance.salesapp.databinding.FragmentServerBinding;
 import com.despance.salesapp.modal.Product.Product;
 import com.despance.salesapp.viewModel.ProductViewModel;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -84,6 +80,9 @@ public class ServerFragment extends DialogFragment {
                 return;
             }
 
+
+
+
             Thread thread = new Thread(() -> {
                 try {
                     connectToServer(ip,Integer.parseInt(port),type);
@@ -93,6 +92,9 @@ public class ServerFragment extends DialogFragment {
             });
 
             thread.start();
+
+
+
         });
 
 
@@ -104,12 +106,14 @@ public class ServerFragment extends DialogFragment {
     public void connectToServer(String ip,int port, int type){
         Socket socket = null;
         try {
-            socket = new Socket(ip, port);
+            socket = new Socket();
+            SocketAddress socketAddress = new InetSocketAddress(ip,port);
+            socket.connect(socketAddress, 5000);
             out = new PrintWriter(socket.getOutputStream(), true);
             out.println(type);
             out.flush();
 
-            byte tagArray[] = new byte[2];
+            byte[] tagArray = new byte[2];
             socket.getInputStream().read(tagArray,0,2);
             byte[] lengthArray = new byte[2];
             int length = 4;
@@ -150,15 +154,23 @@ public class ServerFragment extends DialogFragment {
                 }
             }
             dbHelper.close();
+            alertDialog.dismiss();
+            if(this.getActivity()!=null)
+                this.getActivity().runOnUiThread(() -> Toast.makeText(getContext(),"Request successful", Toast.LENGTH_SHORT).show());
 
+        } catch (SocketTimeoutException e) {
+            if( this.getActivity()!=null)
+                this.getActivity().runOnUiThread(() -> Toast.makeText(getContext(),"Connection timed out", Toast.LENGTH_SHORT).show());
+            this.dismiss();
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        }catch (IOException e){
+            e.printStackTrace();
         }
+
     }
 
 
-    public static Object decode(byte[] bytes){
+    public static Object decode(byte[] bytes) throws UnsupportedEncodingException {
         int byte1 = bytes[0];
         int byte2 = bytes[1];
         int tagVal = (byte1<<8)+byte2;
@@ -168,17 +180,17 @@ public class ServerFragment extends DialogFragment {
 
         switch(tag){
             case ID:
-                return Integer.parseInt(new String(bytes,4,length));
+                return Integer.parseInt(new String(bytes,4,length,"windows-1252"));
             case PRICE:
             case VATRATE:
-                return Float.parseFloat(new String(bytes,4,length));
+                return Float.parseFloat(new String(bytes,4,length, "windows-1252"));
             case BARCODE:
             case NAME:
             case FIRST_NAME:
             case LAST_NAME:
             case EMAIL:
             case PASSWORD:
-                return new String(bytes,4,length);
+                return new String(bytes,4,length,"windows-1252");
             case USER:
 
                 int userId = (int) decode(bytes, currentIndex);
@@ -209,7 +221,7 @@ public class ServerFragment extends DialogFragment {
     }
 
 
-    private static Object decode(byte[] bytes, AtomicInteger indexObj){
+    private static Object decode(byte[] bytes, AtomicInteger indexObj) throws UnsupportedEncodingException {
         int index = indexObj.get();
         TLVTag tag = TLVTag.values()[(bytes[index]<<8) + bytes[index+1]];
         short length = (short)((bytes[index+2]<<8) + bytes[index+3]);
@@ -217,17 +229,17 @@ public class ServerFragment extends DialogFragment {
         indexObj.set(index+length);
         switch(tag){
             case ID:
-                return Integer.parseInt(new String(bytes,index,length));
+                return Integer.parseInt(new String(bytes,index,length,"windows-1252"));
             case PRICE:
             case VATRATE:
-                return Float.parseFloat(new String(bytes,index,length));
+                return Float.parseFloat(new String(bytes,index,length,"windows-1252"));
             case BARCODE:
             case NAME:
             case FIRST_NAME:
             case LAST_NAME:
             case EMAIL:
             case PASSWORD:
-                return new String(bytes,index,length);
+                return new String(bytes,index,length,"windows-1252");
             case USER:
                 indexObj.set(index);
                 int userId = (int) decode(bytes, indexObj);
