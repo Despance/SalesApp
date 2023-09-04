@@ -55,7 +55,6 @@ public class CheckoutFragment extends Fragment {
 
         _binding.creditCartButton.setOnClickListener(v -> {
             //cartItemViewModel.deleteAll();
-            Toast.makeText(getContext(), "Credit Card Payment Received", Toast.LENGTH_SHORT).show();
             //navController.navigate(R.id.action_checkoutFragment_to_ProductFragment);
             PartialPaymentFragment showPopUp = PartialPaymentFragment.newInstance("Credit Card",total- discountTotal);
             showPopUp.show(getChildFragmentManager(),"PartialPayment");
@@ -64,7 +63,7 @@ public class CheckoutFragment extends Fragment {
 
         _binding.cashButton.setOnClickListener(v -> {
             // cartItemViewModel.deleteAll();
-            Toast.makeText(getContext(), "Cash Payment Received", Toast.LENGTH_SHORT).show();
+
             //navController.navigate(R.id.action_checkoutFragment_to_ProductFragment);
             PartialPaymentFragment showPopUp = PartialPaymentFragment.newInstance("Cash",total- discountTotal);
             showPopUp.show(getChildFragmentManager(),"PartialPayment");
@@ -72,6 +71,7 @@ public class CheckoutFragment extends Fragment {
 
         _binding.qrButton.setOnClickListener(v -> {
 
+            /*
             Bundle bundle = new Bundle();
             qrCodeData = generateQRData();
             bundle.putString("qrCodeData",qrCodeData);
@@ -79,6 +79,9 @@ public class CheckoutFragment extends Fragment {
             showPopUp.setArguments(bundle);
 
             showPopUp.show(getChildFragmentManager(),"QR");
+             */
+            PartialPaymentFragment showPopUp = PartialPaymentFragment.newInstance("QR",total- discountTotal);
+            showPopUp.show(getChildFragmentManager(),"PartialPayment");
 
         });
         super.onCreate(savedInstanceState);
@@ -88,13 +91,13 @@ public class CheckoutFragment extends Fragment {
     public void setDiscount(float discount, String discountType){
         switch (discountType){
             case "Cash":
-                this.discountCash = discount;
+                this.discountCash += discount;
                 break;
             case "Credit Card":
-                this.discountCredit = discount;
+                this.discountCredit += discount;
                 break;
             case "QR":
-                this.discountQR = discount;
+                this.discountQR += discount;
                 break;
         }
         this.discountTotal = this.discountCash + this.discountCredit + this.discountQR;

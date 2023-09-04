@@ -13,8 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.despance.salesapp.R;
+import com.despance.salesapp.data.Payment;
+import com.despance.salesapp.data.TLVObject;
 import com.despance.salesapp.databinding.FragmentPartialPaymentBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.sql.Date;
 
 
 public class PartialPaymentFragment extends BottomSheetDialogFragment {
@@ -117,6 +123,14 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
             Fragment fm =getParentFragment();
             if(fm instanceof CheckoutFragment){
                 ((CheckoutFragment) fm).setDiscount(Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString()), paymentType);
+                TLVObject tlvObject = new TLVObject(new Payment(paymentType,paymentType+" transcation requested.",Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString()), new Date(System.currentTimeMillis()).toString()));
+
+                Thread thread = new Thread(() -> {
+                    sendPaymentRequest("192.168.50.2",25565,tlvObject.encode());
+                });
+
+                thread.start();
+
                 dismiss();
             }
             else
@@ -124,4 +138,20 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
 
         });
     }
+
+
+    private void sendPaymentRequest(String ip,int port, byte[] tlv){
+        Socket socket = null;
+        try{
+            socket = new Socket();
+            socket.connect(new InetSocketAddress(ip,port),5000);
+            socket.getOutputStream().write(tlv);
+            socket.getOutputStream().flush();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
 }
