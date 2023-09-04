@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -64,7 +65,7 @@ public class ServerFragment extends DialogFragment {
             String port = _binding.portEditText.getText().toString();
             type = _binding.group.getCheckedRadioButtonId();
             if(type == -1){
-                _binding.userRadioButton.setError("Please select a connection type");
+                ((RadioButton)(_binding.group.getChildAt(_binding.group.getChildCount()-1))).setError("Please select a connection type");
                 return;
             }else if(type == R.id.userRadioButton){
                 type = 0;

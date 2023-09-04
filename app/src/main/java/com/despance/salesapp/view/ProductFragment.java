@@ -1,5 +1,6 @@
 package com.despance.salesapp.view;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -30,7 +31,8 @@ public class ProductFragment extends Fragment {
         _binding = FragmentProductBinding.inflate(getLayoutInflater());
         cartItemViewModel = new ViewModelProvider(this).get(CartItemViewModel.class);
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("com.despance.salesapp", getActivity().MODE_PRIVATE);
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("com.despance.salesapp", Context.MODE_PRIVATE);
 
 
         int loginId = getArguments() != null ? getArguments().getInt("id") : 0;
@@ -55,19 +57,6 @@ public class ProductFragment extends Fragment {
         } );
         _binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         _binding.recyclerView.setHasFixedSize(true);
-
-
-
-        /*
-        productViewModel.insert(new Product("Coca Cola", 30, 0.18f, "8690536000012"));
-        productViewModel.insert(new Product("Fanta", 25, 0.18f, "8690536000022"));
-        productViewModel.insert(new Product("Sprite", 20, 0.18f, "8690536000032"));
-        productViewModel.insert(new Product("Cappy", 27, 0.18f, "8690536000042"));
-        productViewModel.insert(new Product("Limonata", 15, 0.18f, "8690536000082"));
-        productViewModel.insert(new Product("Soda", 10, 0.18f, "8690536000112"));
-        productViewModel.insert(new Product("Ayran", 5, 0.18f, "8690536000062"));
-        productViewModel.insert(new Product("Süt", 7, 0.18f, "8690536000072"));
-         */
 
         _binding.floatingActionButton.setOnClickListener(view -> navController.navigate(R.id.action_ProductFragment_to_cartFragment));
 

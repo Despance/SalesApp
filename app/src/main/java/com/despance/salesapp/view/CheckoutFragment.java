@@ -25,6 +25,9 @@ public class CheckoutFragment extends Fragment {
     CartItemViewModel cartItemViewModel;
     private FragmentCheckoutBinding _binding;
     private String qrCodeData;
+    private float total = 0;
+    private float discountTotal,discountCash,discountCredit,discountQR = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -38,30 +41,33 @@ public class CheckoutFragment extends Fragment {
             orderSummaryRecyclerViewAdapter.setCartItems(cartItems);
             _binding.checkoutRecyclerView.setAdapter(orderSummaryRecyclerViewAdapter);
 
-            float total = 0;
+
             for (CartItem cartItem:cartItems) {
                 total+=cartItem.getProduct().getPrice()*cartItem.getQuantity();
             }
             _binding.totalTextView.setText(String.format("Total: %s", total));
 
         });
+
         _binding.checkoutRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         _binding.checkoutRecyclerView.setHasFixedSize(true);
 
 
         _binding.creditCartButton.setOnClickListener(v -> {
-            cartItemViewModel.deleteAll();
+            //cartItemViewModel.deleteAll();
             Toast.makeText(getContext(), "Credit Card Payment Received", Toast.LENGTH_SHORT).show();
-            navController.navigate(R.id.action_checkoutFragment_to_ProductFragment);
+            //navController.navigate(R.id.action_checkoutFragment_to_ProductFragment);
+            PartialPaymentFragment showPopUp = PartialPaymentFragment.newInstance("Credit Card",total- discountTotal);
+            showPopUp.show(getChildFragmentManager(),"PartialPayment");
 
         });
 
         _binding.cashButton.setOnClickListener(v -> {
-             cartItemViewModel.deleteAll();
+            // cartItemViewModel.deleteAll();
             Toast.makeText(getContext(), "Cash Payment Received", Toast.LENGTH_SHORT).show();
-            navController.navigate(R.id.action_checkoutFragment_to_ProductFragment);
-
-
+            //navController.navigate(R.id.action_checkoutFragment_to_ProductFragment);
+            PartialPaymentFragment showPopUp = PartialPaymentFragment.newInstance("Cash",total- discountTotal);
+            showPopUp.show(getChildFragmentManager(),"PartialPayment");
         });
 
         _binding.qrButton.setOnClickListener(v -> {
@@ -77,6 +83,22 @@ public class CheckoutFragment extends Fragment {
         });
         super.onCreate(savedInstanceState);
 
+    }
+
+    public void setDiscount(float discount, String discountType){
+        switch (discountType){
+            case "Cash":
+                this.discountCash = discount;
+                break;
+            case "Credit Card":
+                this.discountCredit = discount;
+                break;
+            case "QR":
+                this.discountQR = discount;
+                break;
+        }
+        this.discountTotal = this.discountCash + this.discountCredit + this.discountQR;
+        _binding.discountTextView.setText(String.format("-%s", this.discountTotal));
     }
 
     private String generateQRData(){

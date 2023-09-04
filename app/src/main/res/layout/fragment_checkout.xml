@@ -85,8 +85,8 @@
 
     <Button
         android:id="@+id/creditCartButton"
-        android:layout_width="301dp"
-        android:layout_height="173dp"
+        android:layout_width="300dp"
+        android:layout_height="128dp"
         android:layout_marginBottom="8dp"
         android:text="Credit Cart"
         android:textSize="34sp"
@@ -130,14 +130,31 @@
         app:contentPaddingLeft="16dp"
         app:contentPaddingRight="16dp"
         app:layout_constraintBottom_toTopOf="@+id/creditCartButton"
-        tools:layout_editor_absoluteX="0dp">
-
-        <TextView
-            android:id="@+id/totalTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center|right"
-            android:text="TextView"
-            android:textSize="20sp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="right"
+            >
+
+            <TextView
+                android:id="@+id/totalTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center|right"
+                android:text="TextView"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/discountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center|right"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="20sp" />
+
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
