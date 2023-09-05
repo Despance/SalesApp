@@ -1,15 +1,18 @@
 package com.despance.salesapp.data;
 
+import com.despance.salesapp.modal.CartItem.CartItem;
+import com.despance.salesapp.modal.Product.Product;
+
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-import com.despance.salesapp.modal.*;
-import com.despance.salesapp.modal.Product.Product;
 
 public class TLVObject {
 
+
     public enum TLVTag {
         ID, NAME, PRICE, VATRATE, BARCODE, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, USER, PRODUCT, ARRAY, PAYMENT,
-        PAYMENT_TYPE, PAYMENT_AMOUNT, PRODUCT_AMOUNT, TIMESTAMP, DESCRIPTION
+        PAYMENT_TYPE, PAYMENT_AMOUNT, PRODUCT_AMOUNT, TIMESTAMP, DESCRIPTION, PRODUCT_ID, CREDIT_TOTAL, CASH_TOTAL,
+        QR_TOTAL, CART_ITEM, RECEIPT, DATE
     }
 
     private TLVTag tag;
@@ -23,11 +26,11 @@ public class TLVObject {
     public TLVObject(Payment payment) {
         this.tag = TLVTag.PAYMENT;
         TLVObject type = new TLVObject(TLVTag.PAYMENT_TYPE, payment.getType());
-        TLVObject amount = new TLVObject(TLVTag.PAYMENT_AMOUNT, payment.getAmount());
-        TLVObject timestamp = new TLVObject(TLVTag.TIMESTAMP, payment.getTimestamp());
         TLVObject description = new TLVObject(TLVTag.DESCRIPTION, payment.getDescription());
-        this.value = concatTLVObjects(type, amount, timestamp, description);
-        this.childs = new TLVObject[] { type, amount, timestamp, description };
+        TLVObject amount = new TLVObject(TLVTag.PAYMENT_AMOUNT, payment.getAmount());
+        TLVObject timestamp = new TLVObject(TLVTag.DATE, payment.getTimestamp());
+        this.value = concatTLVObjects(type, description, amount, timestamp);
+        this.childs = new TLVObject[] { type, description, amount, timestamp };
         this.length = (short) value.length;
 
     }
@@ -101,7 +104,46 @@ public class TLVObject {
         setValue(value);
         this.length = (short) String.valueOf(value).length();
     }
+    TLVObject(TLVTag tag, long value) {
+        this.tag = tag;
+        setValue(value);
+        this.length = (short) String.valueOf(value).length();
+    }
 
+    TLVObject(CartItem cartItem){
+        this.tag = TLVTag.CART_ITEM;
+        TLVObject productId = new TLVObject(TLVTag.PRODUCT_ID, cartItem.getProduct().getId());
+        TLVObject productAmount = new TLVObject(TLVTag.PRODUCT_AMOUNT, cartItem.getQuantity());
+        this.value = concatTLVObjects(productId, productAmount);
+        this.childs = new TLVObject[] { productId, productAmount };
+        this.length = (short) value.length;
+    }
+    public TLVObject(Receipt receipt){
+        this.tag = TLVTag.RECEIPT;
+
+
+        TLVObject id = new TLVObject(TLVTag.ID, receipt.getUserId());
+        TLVObject timestamp = new TLVObject(TLVTag.TIMESTAMP, receipt.getTimestamp());
+
+        TLVObject[] childs = new TLVObject[receipt.getCartItems().length];
+
+        TLVObject creditTotal = new TLVObject(TLVTag.CREDIT_TOTAL, receipt.getCreditTotal());
+        TLVObject cashTotal = new TLVObject(TLVTag.CASH_TOTAL, receipt.getCashTotal());
+        TLVObject qrTotal = new TLVObject(TLVTag.QR_TOTAL, receipt.getQrTotal());
+        TLVObject[] concat = new TLVObject[receipt.getCartItems().length+5];
+        concat[0] = id;
+        concat[1] = timestamp;
+        int i = 2;
+        for(;i<childs.length+2;i++){
+            concat[i] = new TLVObject(receipt.getCartItems()[i-2]);
+        }
+        concat[i] = creditTotal;
+        concat[i+1] = cashTotal;
+        concat[i+2] = qrTotal;
+        this.value = concatTLVObjects(concat);
+        this.childs = concat;
+        this.length = (short) value.length;
+    }
     public TLVTag getTag() {
         return tag;
     }
@@ -170,6 +212,8 @@ public class TLVObject {
         return sb.toString();
     }
 
+
+
     public String byteToHexString() {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("%04X ", tag.ordinal()));
@@ -225,7 +269,7 @@ public class TLVObject {
         int byte2 = bytes[1];
         int tagVal = (byte1 << 8) + byte2;
         TLVTag tag = TLVTag.values()[tagVal];
-        short length = (short) (bytes[2] << 8 + bytes[3]);
+        short length = (short) ((bytes[2] << 8) + bytes[3]);
         AtomicInteger currentIndex = new AtomicInteger(4);
 
         switch (tag) {
@@ -233,6 +277,7 @@ public class TLVObject {
                 return Integer.parseInt(new String(bytes, 4, length));
             case PRICE:
             case VATRATE:
+            case PAYMENT_AMOUNT:
                 return Float.parseFloat(new String(bytes, 4, length));
             case BARCODE:
             case NAME:
@@ -242,7 +287,6 @@ public class TLVObject {
             case PASSWORD:
                 return new String(bytes, 4, length);
             case USER:
-
                 int userId = (int) decode(bytes, currentIndex);
                 String userFirstName = (String) decode(bytes, currentIndex);
                 String userLastName = (String) decode(bytes, currentIndex);
@@ -261,6 +305,12 @@ public class TLVObject {
                 while (currentIndex.get() < bytes.length)
                     childs.add(decode(bytes, currentIndex));
                 return childs;
+            case PAYMENT:
+                String paymentType = (String) decode(bytes, currentIndex);
+                float paymentAmount = (float) decode(bytes, currentIndex);
+                String paymentTimestamp = (String) decode(bytes, currentIndex);
+                String paymentDescription = (String) decode(bytes, currentIndex);
+                return new Payment(paymentType, paymentDescription, paymentAmount, paymentTimestamp);
             default:
                 return null;
 
@@ -279,6 +329,10 @@ public class TLVObject {
                 return Integer.parseInt(new String(bytes, index, length));
             case PRICE:
             case VATRATE:
+            case CREDIT_TOTAL:
+            case CASH_TOTAL:
+            case QR_TOTAL:
+            case PAYMENT_AMOUNT:
                 return Float.parseFloat(new String(bytes, index, length));
             case BARCODE:
             case NAME:
@@ -286,6 +340,9 @@ public class TLVObject {
             case LAST_NAME:
             case EMAIL:
             case PASSWORD:
+            case PAYMENT_TYPE:
+            case DESCRIPTION:
+            case TIMESTAMP:
                 return new String(bytes, index, length);
             case USER:
                 indexObj.set(index);

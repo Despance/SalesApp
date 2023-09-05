@@ -81,9 +81,6 @@ public class ServerFragment extends DialogFragment {
                 return;
             }
 
-
-
-
             Thread thread = new Thread(() -> {
                 try {
                     connectToServer(ip,Integer.parseInt(port),type);
