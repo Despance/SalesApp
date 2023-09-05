@@ -105,9 +105,27 @@ public class ServerFragment extends DialogFragment {
 
 
     public void connectToServer(String ip,int port, int type){
-        Socket socket = null;
-        try {
-            socket = new Socket();
+
+        try (Socket socket = new Socket()){
+            getActivity().runOnUiThread(() -> {
+                _binding.progressBarServer.setVisibility(android.view.View.VISIBLE);
+                _binding.button.setClickable(false);
+                _binding.button.setFocusable(false);
+                _binding.ipEditText.setClickable(false);
+                _binding.ipEditText.setFocusable(false);
+                _binding.ipEditText.clearFocus();
+                _binding.portEditText.clearFocus();
+                _binding.portEditText.setClickable(false);
+                _binding.portEditText.setFocusable(false);
+                _binding.group.setClickable(false);
+                _binding.group.setFocusable(false);
+                this.setCancelable(false);
+                for(int i = 0; i<_binding.group.getChildCount(); i++){
+                    _binding.group.getChildAt(i).setClickable(false);
+                    _binding.group.getChildAt(i).setFocusable(false);
+                }
+            });
+
             SocketAddress socketAddress = new InetSocketAddress(ip,port);
             socket.connect(socketAddress, 5000);
             out = new PrintWriter(socket.getOutputStream(), true);

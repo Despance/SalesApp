@@ -11,11 +11,13 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.despance.salesapp.R;
 import com.despance.salesapp.data.Payment;
 import com.despance.salesapp.data.TLVObject;
 import com.despance.salesapp.databinding.FragmentPartialPaymentBinding;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.net.InetSocketAddress;
@@ -120,37 +122,81 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
                 }
         );
         _binding.payButton.setOnClickListener(v->{
-            Fragment fm =getParentFragment();
-            if(fm instanceof CheckoutFragment){
-                ((CheckoutFragment) fm).setDiscount(Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString()), paymentType);
-                TLVObject tlvObject = new TLVObject(new Payment(paymentType,paymentType+" transcation requested.",Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString()), new Date(System.currentTimeMillis()).toString()));
 
-                Thread thread = new Thread(() -> {
-                    sendPaymentRequest("192.168.50.2",25565,tlvObject.encode());
-                });
-
-                thread.start();
-
-                dismiss();
+            if(_binding.partialAmountTextView.getEditText().getText().toString().isEmpty()){
+                _binding.partialAmountTextView.setError("Partial amount cannot be empty");
+                return;
             }
-            else
+
+            if(paymentType.equals("Cash")){
+                Fragment fm =getParentFragment();
+                if(fm instanceof CheckoutFragment)
+                    ((CheckoutFragment) fm).setDiscount(Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString()), paymentType);
                 dismiss();
+                return;
+            }
+
+            TLVObject tlvObject = new TLVObject(new Payment(paymentType,Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString())+"TL "+paymentType+" transcation requested.",Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString()), new Date(System.currentTimeMillis()).toString()));
+
+            Thread thread = new Thread(() -> {
+                sendPaymentRequest("192.168.50.2",25565,tlvObject.encode());
+            });
+
+            thread.start();
 
         });
     }
 
 
     private void sendPaymentRequest(String ip,int port, byte[] tlv){
-        Socket socket = null;
-        try{
-            socket = new Socket();
-            socket.connect(new InetSocketAddress(ip,port),5000);
+        getActivity().runOnUiThread(()->{
+        _binding.progressBar.setVisibility(View.VISIBLE);
+        _binding.payButton.setClickable(false);
+        _binding.payButton.setFocusable(false);
+        _binding.partialAmountTextView.setClickable(false);
+        _binding.partialAmountTextView.setFocusable(false);
+        _binding.partialAmountTextView.getEditText().setFocusable(false);
+        _binding.partialAmountTextView.getEditText().setClickable(false);
+        _binding.partialAmountTextView.getEditText().clearFocus();
+        _binding.partialAmountTextView.setEndIconOnClickListener(null);
+        _binding.partialAmountTextView.clearFocus();
+        this.setCancelable(false);
+        });
+
+        try(Socket socket = new Socket()){
+            Fragment fm =getParentFragment();
+            if (!(fm instanceof CheckoutFragment))
+                return;
+
+            socket.connect(new InetSocketAddress(ip,port),10000);
             socket.getOutputStream().write(tlv);
             socket.getOutputStream().flush();
 
+            byte[] response = new byte[1];
+            socket.getInputStream().read(response,0,1);
+
+            if(response[0] == '1'){
+                getActivity().runOnUiThread(()->{
+                    Toast.makeText(getContext(),"Payment Successful",Toast.LENGTH_SHORT).show();
+                    ((CheckoutFragment) fm).setDiscount(Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString()), paymentType);
+                });
+            }else if (response[0] == '0'){
+                getActivity().runOnUiThread(()->{
+                    Toast.makeText(getContext(),"Payment Declined",Toast.LENGTH_SHORT).show();
+                });
+            }else {
+                getActivity().runOnUiThread(()->{
+                    Toast.makeText(getContext(),"Unknown Response",Toast.LENGTH_SHORT).show();
+                });
+            }
+
         }catch (Exception e){
-            e.printStackTrace();
+            getActivity().runOnUiThread(()->{
+                Toast.makeText(getContext(),"Request timeout",Toast.LENGTH_SHORT).show();
+            });
         }
+
+        dismiss();
     }
 
 
