@@ -6,7 +6,7 @@ public class Receipt {
 
     private int id;
     private int userId;
-    private long timestamp;
+    private String timestamp;
     private CartItem[] cartItems;
     private float creditTotal;
     private float cashTotal;
@@ -15,7 +15,7 @@ public class Receipt {
     public Receipt() {
     }
 
-    public Receipt(int userId, long timestamp, float creditTotal, float cashTotal, float qrTotal) {
+    public Receipt(int userId, String timestamp, float creditTotal, float cashTotal, float qrTotal) {
         this.userId = userId;
         this.timestamp = timestamp;
         this.creditTotal = creditTotal;
@@ -23,7 +23,7 @@ public class Receipt {
         this.qrTotal = qrTotal;
     }
 
-    public Receipt(int id, int userId, long timestamp, float creditTotal, float cashTotal, float qrTotal) {
+    public Receipt(int id, int userId, String timestamp, float creditTotal, float cashTotal, float qrTotal) {
         this(userId, timestamp, creditTotal, cashTotal, qrTotal);
         this.id = id;
     }
@@ -44,11 +44,11 @@ public class Receipt {
         this.userId = userId;
     }
 
-    public long getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 

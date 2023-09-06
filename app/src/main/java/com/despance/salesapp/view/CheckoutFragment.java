@@ -27,6 +27,7 @@ import com.despance.salesapp.viewModel.CartItemViewModel;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.sql.Date;
 import java.util.ArrayList;
 
 public class CheckoutFragment extends Fragment {
@@ -120,10 +121,10 @@ public class CheckoutFragment extends Fragment {
         receipt.setCashTotal(discountCash);
         receipt.setCreditTotal(discountCredit);
         receipt.setQrTotal(discountQR);
-        receipt.setTimestamp(System.currentTimeMillis());
+        receipt.setTimestamp(new Date(System.currentTimeMillis()).toString());
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("com.despance.salesapp", Context.MODE_PRIVATE);
-        int loginId = getArguments() != null ? getArguments().getInt("id") : -1;
+        int loginId =  sharedPreferences.getInt("id",-1);
         receipt.setUserId(loginId);
 
         cartItemViewModel.getAllProducts().observe(this, cartItems -> {

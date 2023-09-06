@@ -59,6 +59,16 @@ public class TLVObject {
         this.length = (byte) value.length;
     }
 
+    public TLVObject (CartItem[] cartItems){
+        TLVObject[] childs = new TLVObject[cartItems.length];
+        for (int i = 0; i < childs.length; i++) {
+            childs[i] = new TLVObject(cartItems[i]);
+        }
+        this.tag = TLVTag.ARRAY;
+        this.childs = childs;
+        this.value = concatTLVObjects(childs);
+        this.length = (short) value.length;
+    }
     public TLVObject(Product[] products) {
         TLVObject[] childs = new TLVObject[products.length];
         for (int i = 0; i < childs.length; i++) {
@@ -104,11 +114,7 @@ public class TLVObject {
         setValue(value);
         this.length = (short) String.valueOf(value).length();
     }
-    TLVObject(TLVTag tag, long value) {
-        this.tag = tag;
-        setValue(value);
-        this.length = (short) String.valueOf(value).length();
-    }
+
 
     TLVObject(CartItem cartItem){
         this.tag = TLVTag.CART_ITEM;
@@ -125,23 +131,14 @@ public class TLVObject {
         TLVObject id = new TLVObject(TLVTag.ID, receipt.getUserId());
         TLVObject timestamp = new TLVObject(TLVTag.TIMESTAMP, receipt.getTimestamp());
 
-        TLVObject[] childs = new TLVObject[receipt.getCartItems().length];
+        TLVObject childs = new TLVObject(receipt.getCartItems());
 
         TLVObject creditTotal = new TLVObject(TLVTag.CREDIT_TOTAL, receipt.getCreditTotal());
         TLVObject cashTotal = new TLVObject(TLVTag.CASH_TOTAL, receipt.getCashTotal());
         TLVObject qrTotal = new TLVObject(TLVTag.QR_TOTAL, receipt.getQrTotal());
-        TLVObject[] concat = new TLVObject[receipt.getCartItems().length+5];
-        concat[0] = id;
-        concat[1] = timestamp;
-        int i = 2;
-        for(;i<childs.length+2;i++){
-            concat[i] = new TLVObject(receipt.getCartItems()[i-2]);
-        }
-        concat[i] = creditTotal;
-        concat[i+1] = cashTotal;
-        concat[i+2] = qrTotal;
-        this.value = concatTLVObjects(concat);
-        this.childs = concat;
+
+        this.value = concatTLVObjects(id, timestamp, childs, creditTotal, cashTotal, qrTotal);
+        this.childs = new TLVObject[] { id, timestamp, childs, creditTotal, cashTotal, qrTotal };
         this.length = (short) value.length;
     }
     public TLVTag getTag() {

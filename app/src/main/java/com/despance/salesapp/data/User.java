@@ -113,7 +113,7 @@ public class User {
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
             sqLiteDatabase.execSQL("CREATE TABLE " + TABLE_NAME + "("
-                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + KEY_ID + " INTEGER PRIMARY KEY,"
                     + KEY_EMAIL + " TEXT,"
                     + KEY_PASSWORD + " TEXT,"
                     + KEY_FIRSTNAME + " TEXT,"
@@ -191,7 +191,7 @@ public class User {
 
         public void deleteAll() {
             SQLiteDatabase db = this.getWritableDatabase();
-            db.execSQL("delete from "+ TABLE_NAME);
+            db.delete(TABLE_NAME, null, null);
             db.close();
         }
     }
