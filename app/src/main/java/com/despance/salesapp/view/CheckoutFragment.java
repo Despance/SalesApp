@@ -22,6 +22,7 @@ import com.despance.salesapp.data.Receipt;
 import com.despance.salesapp.data.TLVObject;
 import com.despance.salesapp.databinding.FragmentCheckoutBinding;
 import com.despance.salesapp.modal.CartItem.CartItem;
+import com.despance.salesapp.utils.TLVUtils;
 import com.despance.salesapp.viewModel.CartItemViewModel;
 
 import java.io.IOException;
@@ -129,8 +130,7 @@ public class CheckoutFragment extends Fragment {
 
         cartItemViewModel.getAllProducts().observe(this, cartItems -> {
             receipt.setCartItems(cartItems.toArray(new CartItem[cartItems.size()]));
-            TLVObject tlvObject = new TLVObject(receipt);
-            sendReceiptToServer(tlvObject);
+            sendReceiptToServer(receipt);
 
         });
 
@@ -145,11 +145,11 @@ public class CheckoutFragment extends Fragment {
         });
         return qrCodeDataBuilder.toString();
     }
-    private void sendReceiptToServer(TLVObject tlvObject){
+    private void sendReceiptToServer(Receipt receipt){
         Thread thread = new Thread(() -> {
             try(Socket socket = new Socket()) {
                 socket.connect(new InetSocketAddress("192.168.50.2",25565),10000);
-                socket.getOutputStream().write(tlvObject.encode());
+                socket.getOutputStream().write(TLVUtils.encode(receipt));
 
             } catch (IOException e) {
                 throw new RuntimeException(e);

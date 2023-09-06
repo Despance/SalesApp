@@ -19,7 +19,7 @@ public abstract class ProductDatabase extends RoomDatabase {
     static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
-    static ProductDatabase getDatabase(final Context context) {
+    public static ProductDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (ProductDatabase.class) {
                 if (INSTANCE == null) {

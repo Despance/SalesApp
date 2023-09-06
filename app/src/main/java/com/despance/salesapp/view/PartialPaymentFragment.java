@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.despance.salesapp.R;
 import com.despance.salesapp.data.Payment;
 import com.despance.salesapp.data.TLVObject;
 import com.despance.salesapp.databinding.FragmentPartialPaymentBinding;
+import com.despance.salesapp.utils.TLVUtils;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -136,10 +138,12 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
                 return;
             }
 
-            TLVObject tlvObject = new TLVObject(new Payment(paymentType,Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString())+"TL "+paymentType+" transcation requested.",Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString()), new Date(System.currentTimeMillis()).toString()));
+            Payment payment = new Payment(paymentType,Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString())+"TL "+paymentType+" transcation requested.",Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString()), new Date(System.currentTimeMillis()).toString());
+
+            byte[] tlv = TLVUtils.encode(payment);
 
             Thread thread = new Thread(() -> {
-                sendPaymentRequest("192.168.50.2",25565,tlvObject.encode());
+                sendPaymentRequest("192.168.50.2",25565,tlv );
             });
 
             thread.start();

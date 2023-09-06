@@ -33,6 +33,10 @@ public class Product {
         this.id = id;
     }
 
+    public Product() {
+
+    }
+
     public int getId() {
         return id;
     }

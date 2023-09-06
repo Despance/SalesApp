@@ -14,6 +14,10 @@ public class Payment {
         this.timestamp = timestamp;
     }
 
+    public Payment() {
+
+    }
+
     public String getType() {
         return type;
     }
