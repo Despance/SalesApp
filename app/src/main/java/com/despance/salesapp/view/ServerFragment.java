@@ -16,6 +16,7 @@ import com.despance.salesapp.R;
 import com.despance.salesapp.data.User;
 import com.despance.salesapp.databinding.FragmentServerBinding;
 import com.despance.salesapp.modal.Product.Product;
+import com.despance.salesapp.utils.TLVUtils;
 import com.despance.salesapp.viewModel.ProductViewModel;
 
 import java.io.BufferedReader;
@@ -32,6 +33,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ServerFragment extends DialogFragment {
 
+    @Deprecated
     public enum TLVTag{
         ID, NAME, PRICE, VATRATE, BARCODE,FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, USER, PRODUCT,ARRAY
     }
@@ -58,20 +60,14 @@ public class ServerFragment extends DialogFragment {
                 .setView(_binding.getRoot())
                 .create();
 
-        _binding.ipEditText.setText("192.168.50.3");
+        _binding.ipEditText.setText("192.168.50.2");
         _binding.portEditText.setText("25565");
         _binding.button.setOnClickListener(v -> {
+
             String ip = _binding.ipEditText.getText().toString();
             String port = _binding.portEditText.getText().toString();
             type = _binding.group.getCheckedRadioButtonId();
-            if(type == -1){
-                ((RadioButton)(_binding.group.getChildAt(_binding.group.getChildCount()-1))).setError("Please select a connection type");
-                return;
-            }else if(type == R.id.userRadioButton){
-                type = 0;
-            }else{
-                type = 1;
-            }
+
             if(ip.isEmpty()){
                 _binding.ipEditText.setError("Please enter an IP address");
                 return;
@@ -80,6 +76,23 @@ public class ServerFragment extends DialogFragment {
                 _binding.portEditText.setError("Please enter a port number");
                 return;
             }
+
+            if(type == -1){
+                ((RadioButton)(_binding.group.getChildAt(_binding.group.getChildCount()-1))).setError("Please select a connection type");
+                return;
+            }else if(type == R.id.userRadioButton){
+                type = 0;
+            }else if (type == R.id.productRadioButton){
+                type = 1;
+            }else if(type == R.id.paymentRadioButton){
+                CheckoutFragment.paymentServerIp = ip;
+                CheckoutFragment.paymentServerPort = Integer.parseInt(port);
+                Toast.makeText(getContext(),"Payment server settings set", Toast.LENGTH_SHORT).show();
+                alertDialog.dismiss();
+                return;
+            }
+
+
 
             Thread thread = new Thread(() -> {
                 try {
@@ -157,7 +170,7 @@ public class ServerFragment extends DialogFragment {
                 dbHelper.deleteAll();
             else if(type == 1)
                 productViewModel.deleteAll();
-            ArrayList<Object> objects = (ArrayList<Object>) decode(bytes);
+            ArrayList<Object> objects = (ArrayList<Object>) TLVUtils.decode(bytes);
             for (Object object: objects) {
                 if(object instanceof User){
                     User user = (User) object;
@@ -185,7 +198,7 @@ public class ServerFragment extends DialogFragment {
 
     }
 
-
+    @Deprecated
     public static Object decode(byte[] bytes) throws UnsupportedEncodingException {
         int byte1 = bytes[0];
         int byte2 = bytes[1];
@@ -236,7 +249,7 @@ public class ServerFragment extends DialogFragment {
 
     }
 
-
+    @Deprecated
     private static Object decode(byte[] bytes, AtomicInteger indexObj) throws UnsupportedEncodingException {
         int index = indexObj.get();
         TLVTag tag = TLVTag.values()[(bytes[index]<<8) + bytes[index+1]];

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -33,6 +34,8 @@ import java.util.ArrayList;
 
 public class CheckoutFragment extends Fragment {
 
+    public static String paymentServerIp = "192.168.50.2";
+    public static int paymentServerPort = 25565;
     CartItemViewModel cartItemViewModel;
     private FragmentCheckoutBinding _binding;
     private String qrCodeData;
@@ -118,6 +121,11 @@ public class CheckoutFragment extends Fragment {
     }
 
     private void generateReceipt(){
+        _binding.cartProgressBar.setVisibility(View.VISIBLE);
+        _binding.creditCartButton.setEnabled(false);
+        _binding.cashButton.setEnabled(false);
+        _binding.qrButton.setEnabled(false);
+
         Receipt receipt = new Receipt();
         receipt.setCashTotal(discountCash);
         receipt.setCreditTotal(discountCredit);
@@ -135,6 +143,8 @@ public class CheckoutFragment extends Fragment {
         });
 
     }
+
+    @Deprecated
     private String generateQRData(){
         StringBuilder qrCodeDataBuilder = new StringBuilder();
         cartItemViewModel.getAllProducts().observe(this, cartItems -> {
@@ -148,11 +158,48 @@ public class CheckoutFragment extends Fragment {
     private void sendReceiptToServer(Receipt receipt){
         Thread thread = new Thread(() -> {
             try(Socket socket = new Socket()) {
-                socket.connect(new InetSocketAddress("192.168.50.2",25565),10000);
+                socket.connect(new InetSocketAddress(paymentServerIp,paymentServerPort),10000);
                 socket.getOutputStream().write(TLVUtils.encode(receipt));
+                byte[] response = new byte[1];
+                socket.getInputStream().read(response,0,1);
+                if(response[0] == '1'){
+                    cartItemViewModel.deleteAll();
+
+                    requireActivity().runOnUiThread(() ->{
+                        NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+                        if(navController.getCurrentDestination().getId() == R.id.checkoutFragment){
+                            navController.navigate(R.id.action_checkoutFragment_to_receiptRecievedFragment);
+                        }
+                    });
+
+                }
+                else if (response[0] == '0'){
+
+                    requireActivity().runOnUiThread(() ->{
+                        _binding.cartProgressBar.setVisibility(View.GONE);
+                        _binding.creditCartButton.setEnabled(true);
+                        _binding.cashButton.setEnabled(true);
+                        _binding.qrButton.setEnabled(true);
+                        Toast.makeText(getContext(),"Receipt denied",Toast.LENGTH_SHORT).show();
+                    });
+                }else{
+                    requireActivity().runOnUiThread(() ->{
+                        _binding.cartProgressBar.setVisibility(View.GONE);
+                        _binding.creditCartButton.setEnabled(true);
+                        _binding.cashButton.setEnabled(true);
+                        _binding.qrButton.setEnabled(true);
+                        Toast.makeText(getContext(),"Unknown response",Toast.LENGTH_SHORT).show();
+                    });
+                }
 
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                requireActivity().runOnUiThread(() ->{
+                    _binding.cartProgressBar.setVisibility(View.GONE);
+                    _binding.creditCartButton.setEnabled(true);
+                    _binding.cashButton.setEnabled(true);
+                    _binding.qrButton.setEnabled(true);
+                    Toast.makeText(getContext(),"Cannot connect to Payment Server",Toast.LENGTH_SHORT).show();
+                });
             }
 
         });

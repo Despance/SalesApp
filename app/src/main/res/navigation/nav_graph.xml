@@ -55,6 +55,11 @@
         <action
             android:id="@+id/action_checkoutFragment_to_ProductFragment"
             app:destination="@id/ProductFragment" />
+        <action
+            android:id="@+id/action_checkoutFragment_to_receiptRecievedFragment"
+            app:destination="@id/receiptRecievedFragment"
+            app:popUpTo="@id/ProductFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/adminFragment"
@@ -64,5 +69,16 @@
         <action
             android:id="@+id/action_adminFragment_to_ProductFragment"
             app:destination="@id/ProductFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/receiptRecievedFragment"
+        android:name="com.despance.salesapp.view.ReceiptRecievedFragment"
+        android:label="Receipt Sent"
+        tools:layout="@layout/fragment_receipt_recieved">
+        <action
+            android:id="@+id/action_receiptRecievedFragment_to_ProductFragment"
+            app:destination="@id/ProductFragment"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

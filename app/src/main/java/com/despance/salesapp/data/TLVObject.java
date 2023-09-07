@@ -6,6 +6,7 @@ import com.despance.salesapp.modal.Product.Product;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Deprecated
 public class TLVObject {
 
 

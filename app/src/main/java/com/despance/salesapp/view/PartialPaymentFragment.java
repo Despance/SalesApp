@@ -143,7 +143,7 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
             byte[] tlv = TLVUtils.encode(payment);
 
             Thread thread = new Thread(() -> {
-                sendPaymentRequest("192.168.50.2",25565,tlv );
+                sendPaymentRequest(CheckoutFragment.paymentServerIp,CheckoutFragment.paymentServerPort,tlv );
             });
 
             thread.start();
@@ -181,7 +181,7 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
 
             if(response[0] == '1'){
                 getActivity().runOnUiThread(()->{
-                    Toast.makeText(getContext(),"Payment Successful",Toast.LENGTH_SHORT).show();
+                    dismiss();
                     ((CheckoutFragment) fm).setDiscount(Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString()), paymentType);
                 });
             }else if (response[0] == '0'){

@@ -12,6 +12,7 @@ import com.despance.salesapp.modal.Product.Product;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class ProductDBHelper extends SQLiteOpenHelper {
 
     //!!!!!!!!!!!!!!!!!!!!DEPRECATED!!!!!!!!!!!!!!!!!!!!!!!!

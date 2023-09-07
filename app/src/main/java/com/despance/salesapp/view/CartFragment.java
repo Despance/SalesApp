@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.despance.salesapp.R;
 import com.despance.salesapp.adapter.CartRecyclerViewAdapter;
@@ -58,6 +59,10 @@ public class CartFragment extends Fragment {
 
 
         _binding.checkoutButton.setOnClickListener(v -> {
+            if(cartItemViewModel.getAllProducts().getValue().size() == 0) {
+                Toast.makeText(getContext(), "Cart is Empty", Toast.LENGTH_SHORT).show();
+                return;
+            }
             NavController navController = Navigation.findNavController(v);
             navController.navigate(R.id.action_cartFragment_to_checkoutFragment);
         });

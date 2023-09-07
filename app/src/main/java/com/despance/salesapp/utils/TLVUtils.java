@@ -3,8 +3,11 @@ package com.despance.salesapp.utils;
 import com.despance.salesapp.data.*;
 import com.despance.salesapp.modal.Product.Product;
 import com.despance.salesapp.modal.CartItem.CartItem;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+
 
 
 public final class TLVUtils {
@@ -16,7 +19,7 @@ public final class TLVUtils {
     }
 
     private TLVUtils() {
-    };
+    }
 
     public static byte[] encode(User user) {
         byte[] tagBytes = setTag(TLVTag.USER);
@@ -179,7 +182,7 @@ public final class TLVUtils {
 
     public static Object decode(byte[] bytes) {
         int tag = (bytes[0] << 8) + bytes[1];
-        AtomicInteger offset = new AtomicInteger(2);
+        AtomicInteger offset = new AtomicInteger(4);
         switch (TLVTag.values()[tag]) {
             case USER:
                 return decodeUser(bytes, offset);
@@ -200,12 +203,12 @@ public final class TLVUtils {
     }
 
     private static User decodeUser(byte[] bytes, AtomicInteger offset) {
-        int index = offset.get();
-        int length = (bytes[index] << 8) + bytes[index + 1] & 0xff;
+        int index = offset.get() - 2;
+        int length = (bytes[index] << 8) + (bytes[index + 1] & 0xff);
         index += 2;
         offset.set(index);
         User user = new User();
-        while (offset.get() < length) {
+        while (offset.get() < index + length) {
             Pair decoded = decodePrimitive(bytes, offset);
             switch (TLVTag.values()[decoded.getTag()]) {
                 case ID:
@@ -228,16 +231,17 @@ public final class TLVUtils {
                             + " while decoding user. Tag number: " + decoded.getTag());
             }
         }
+        offset.set(index + length);
         return user;
     }
 
     private static Product decodeProduct(byte[] bytes, AtomicInteger offset) {
-        int index = offset.get();
-        int length = (bytes[index] << 8) + bytes[index + 1] & 0xff;
+        int index = offset.get() - 2;
+        int length = (bytes[index] << 8) + (bytes[index + 1] & 0xff);
         index += 2;
         offset.set(index);
         Product product = new Product();
-        while (offset.get() < length) {
+        while (offset.get() < index + length) {
             Pair decoded = decodePrimitive(bytes, offset);
 
             switch (TLVTag.values()[decoded.getTag()]) {
@@ -261,17 +265,18 @@ public final class TLVUtils {
                             + " while decoding product. Tag number: " + decoded.getTag());
             }
         }
+        offset.set(index + length);
         return product;
 
     }
 
     private static Payment decodePayment(byte[] bytes, AtomicInteger offset) {
-        int index = offset.get();
-        int length = (bytes[index] << 8) + bytes[index + 1] & 0xff;
+        int index = offset.get() - 2;
+        int length = (bytes[index] << 8) + (bytes[index + 1] & 0xff);
         index += 2;
         offset.set(index);
         Payment payment = new Payment();
-        while (offset.get() < length) {
+        while (offset.get() < index + length) {
             Pair decoded = decodePrimitive(bytes, offset);
             switch (TLVTag.values()[decoded.getTag()]) {
                 case PAYMENT_TYPE:
@@ -293,16 +298,16 @@ public final class TLVUtils {
     }
 
     private static CartItem decodeCartItem(byte[] bytes, AtomicInteger offset) {
-        int index = offset.get();
-        int length = (bytes[index] << 8) + bytes[index + 1] & 0xff;
+        int index = offset.get() - 2;
+        int length = (bytes[index] << 8) + (bytes[index + 1] & 0xff);
         index += 2;
         offset.set(index);
         CartItem cartItem = new CartItem();
-        while (offset.get() < length) {
+        while (offset.get() < index + length) {
             Pair decoded = decodePrimitive(bytes, offset);
             switch (TLVTag.values()[decoded.getTag()]) {
                 case PRODUCT_ID:
-                    throw new UnsupportedOperationException("Product id is not implemented while decoding cart item in android");
+                    throw new UnsupportedOperationException("Product id is not implemented in android version.");
                 case PRODUCT:
                     cartItem.setProduct((Product) decoded.getValue());
                     break;
@@ -314,23 +319,24 @@ public final class TLVUtils {
                             + " while decoding cart item. Tag number: " + decoded.getTag());
             }
         }
+        offset.set(index + length);
         return cartItem;
     }
 
     private static Receipt decodeReceipt(byte[] bytes, AtomicInteger offset) {
-        int index = offset.get();
-        int length = (bytes[index] << 8) + bytes[index + 1] & 0xff;
+        int index = offset.get() - 2;
+        int length = (bytes[index] << 8) + (bytes[index + 1] & 0xff);
         index += 2;
         offset.set(index);
         Receipt receipt = new Receipt();
-        while (offset.get() < length) {
+        while (offset.get() < index + length) {
             Pair decoded = decodePrimitive(bytes, offset);
             switch (TLVTag.values()[decoded.getTag()]) {
                 case ID:
                     receipt.setId((int) decoded.getValue());
                     break;
                 case USER_ID:
-                    throw new UnsupportedOperationException("User id is not implemented while decoding receipt in android");
+                    throw new UnsupportedOperationException("User id is not implemented in android version.");
                 case DATE:
                     receipt.setTimestamp((String) decoded.getValue());
                     break;
@@ -344,7 +350,6 @@ public final class TLVUtils {
                     receipt.setQrTotal((float) decoded.getValue());
                     break;
                 case ARRAY:
-
                     ArrayList<CartItem> cartItems = new ArrayList<>();
                     for (Object o : (ArrayList<?>) decoded.getValue()) {
                         if (o instanceof CartItem)
@@ -357,30 +362,23 @@ public final class TLVUtils {
                             + " while decoding receipt. Tag number: " + decoded.getTag());
             }
         }
+        offset.set(index + length);
         return receipt;
     }
 
     private static ArrayList<?> decodeArray(byte[] bytes, AtomicInteger offset) {
-        int index = offset.get();
-        int length = (bytes[index] << 8) + bytes[index + 1] & 0xff;
+        int index = offset.get() - 2;
+        int length = (bytes[index] << 8) + (bytes[index + 1] & 0xff);
         index += 2;
         offset.set(index);
         ArrayList<Object> list = new ArrayList<>();
-        while (offset.get() < length) {
+        while (offset.get() < index + length) {
             Pair decoded = decodePrimitive(bytes, offset);
             switch (TLVTag.values()[decoded.getTag()]) {
                 case USER:
-                    list.add(decoded.getValue());
-                    break;
                 case PRODUCT:
-                    list.add(decoded.getValue());
-                    break;
                 case PAYMENT:
-                    list.add(decoded.getValue());
-                    break;
                 case CART_ITEM:
-                    list.add(decoded.getValue());
-                    break;
                 case RECEIPT:
                     list.add(decoded.getValue());
                     break;
@@ -389,22 +387,36 @@ public final class TLVUtils {
                             + " while decoding array. Tag number: " + decoded.getTag());
             }
         }
+        offset.set(index + length);
         return list;
+    }
+
+    public static String byteToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02X ", b));
+        }
+        return sb.toString();
     }
 
     private static Pair decodePrimitive(byte[] bytes, AtomicInteger offset) {
         int index = offset.get();
-        int tag = (bytes[index] << 8) + bytes[index + 1] & 0xff;
+        int tag = (bytes[index] << 8) + (bytes[index + 1] & 0xff);
         index += 2;
-        int length = (bytes[index] << 8) + bytes[index + 1] & 0xff;
+        int length = (bytes[index] << 8) + (bytes[index + 1] & 0xff);
+        String value;
         index += 2;
-        String value = new String(bytes, index, length);
-        offset.set(index + length);
         switch (TLVTag.values()[tag]) {
             case ID:
             case PRODUCT_ID:
             case PRODUCT_QUANTITY:
             case USER_ID:
+                try {
+                    value = new String(bytes, index, length,"windows-1252");
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+                offset.set(index + length);
                 return new Pair(tag, Integer.parseInt(value));
             case FIRST_NAME:
             case LAST_NAME:
@@ -416,6 +428,12 @@ public final class TLVUtils {
             case BARCODE:
             case TIMESTAMP:
             case DATE:
+                try {
+                    value = new String(bytes, index, length,"windows-1252");
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+                offset.set(index + length);
                 return new Pair(tag, value);
             case PRICE:
             case VATRATE:
@@ -423,6 +441,12 @@ public final class TLVUtils {
             case CREDIT_TOTAL:
             case CASH_TOTAL:
             case QR_TOTAL:
+                try {
+                    value = new String(bytes, index, length,"windows-1252");
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+                offset.set(index + length);
                 return new Pair(tag, Float.parseFloat(value));
             case USER:
                 offset.set(index);

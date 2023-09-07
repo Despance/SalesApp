@@ -77,6 +77,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Products" />
+
+        <RadioButton
+            android:id="@+id/paymentRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Payment" />
     </RadioGroup>
 
     <ProgressBar
