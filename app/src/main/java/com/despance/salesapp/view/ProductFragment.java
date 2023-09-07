@@ -35,14 +35,15 @@ public class ProductFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("com.despance.salesapp", Context.MODE_PRIVATE);
 
 
-        int loginId = getArguments() != null ? getArguments().getInt("id") : 0;
+        int loginId = getArguments() != null ? getArguments().getInt("id") : -1;
         NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
 
         //Empty the cart if a new user login
-        if (loginId != sharedPreferences.getInt("id",-1))
+        if ((loginId != -1)&&(loginId != sharedPreferences.getInt("id",-1))){
             cartItemViewModel.deleteAll();
+            sharedPreferences.edit().putInt("id",loginId).apply();
+        }
 
-        sharedPreferences.edit().putInt("id",loginId).apply();
 
 
         ProductViewModel productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);

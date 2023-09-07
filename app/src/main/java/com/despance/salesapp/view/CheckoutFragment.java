@@ -164,13 +164,13 @@ public class CheckoutFragment extends Fragment {
                 socket.getInputStream().read(response,0,1);
                 if(response[0] == '1'){
                     cartItemViewModel.deleteAll();
-
-                    requireActivity().runOnUiThread(() ->{
-                        NavController navController= Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
-                        if(navController.getCurrentDestination().getId() == R.id.checkoutFragment){
-                            navController.navigate(R.id.action_checkoutFragment_to_receiptRecievedFragment);
-                        }
-                    });
+                    if(isAdded())
+                        getActivity().runOnUiThread(() ->{
+                            NavController navController= Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
+                            if(navController.getCurrentDestination().getId() == R.id.checkoutFragment){
+                                navController.navigate(R.id.action_checkoutFragment_to_receiptRecievedFragment);
+                            }
+                        });
 
                 }
                 else if (response[0] == '0'){
