@@ -160,10 +160,10 @@ public class CheckoutFragment extends Fragment {
             try(Socket socket = new Socket()) {
                 socket.connect(new InetSocketAddress(paymentServerIp,paymentServerPort),10000);
                 socket.getOutputStream().write(TLVUtils.encode(receipt));
-                byte[] response = new byte[]{'1'};
+                byte[] response = new byte[1];
 
-                //This is broken, Sometimes it doesn't read the response from the server, also it breaks the payment requests.
-
+                socket.getInputStream().read(response,0,1);
+                socket.close();
 
                 if(response[0] == '1'){
                     cartItemViewModel.deleteAll();

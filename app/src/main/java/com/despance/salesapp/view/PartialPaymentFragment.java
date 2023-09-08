@@ -182,6 +182,7 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
 
             byte[] response = new byte[1];
             socket.getInputStream().read(response,0,1);
+            socket.close();
             if(response[0] == '1'){
                 getActivity().runOnUiThread(()-> {
                     dismiss();
