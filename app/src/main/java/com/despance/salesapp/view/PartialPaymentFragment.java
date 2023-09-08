@@ -101,6 +101,7 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                         String partialAmountText = _binding.partialAmountTextView.getEditText().getText().toString();
                         _binding.partialAmountTextView.setError(null);
+                        _binding.payButton.setEnabled(true);
                         float partialAmount = 0;
                         if(!partialAmountText.isEmpty()){
                             try {
@@ -108,13 +109,16 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
 
                             }catch (NumberFormatException e){
                                 _binding.partialAmountTextView.setError("Invalid Amount");
+                                _binding.payButton.setEnabled(false);
                             }
                         }
 
                         if (partialAmount <= remainingAmount)
                             _binding.remaningAmountTextView.setText(String.format("Remaining Amount: %s", remainingAmount - partialAmount));
-                        else
+                        else{
+                            _binding.payButton.setEnabled(false);
                             _binding.partialAmountTextView.setError("Partial amount cannot be greater than remaining amount");
+                        }
                     }
 
                     @Override
