@@ -22,6 +22,7 @@ import com.despance.salesapp.utils.TLVUtils;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.sql.Date;
@@ -76,7 +77,6 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         _binding.previousTotalTextView.setText(String.format("Remaining Cart Total: %s", remainingAmount));
         _binding.paymentMethodTextView.setText(String.format("Payment Method: %s", paymentType));
         _binding.partialAmountTextView.setEndIconOnClickListener(v->{
@@ -130,6 +130,7 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
                 return;
             }
 
+
             if(paymentType.equals("Cash")){
                 Fragment fm =getParentFragment();
                 if(fm instanceof CheckoutFragment)
@@ -141,6 +142,8 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
             Payment payment = new Payment(paymentType,Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString())+"TL "+paymentType+" transcation requested.",Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString()), new Date(System.currentTimeMillis()).toString());
 
             byte[] tlv = TLVUtils.encode(payment);
+
+
 
             Thread thread = new Thread(() -> {
                 sendPaymentRequest(CheckoutFragment.paymentServerIp,CheckoutFragment.paymentServerPort,tlv );
@@ -176,31 +179,36 @@ public class PartialPaymentFragment extends BottomSheetDialogFragment {
             socket.getOutputStream().write(tlv);
             socket.getOutputStream().flush();
 
+
             byte[] response = new byte[1];
             socket.getInputStream().read(response,0,1);
-
             if(response[0] == '1'){
-                getActivity().runOnUiThread(()->{
+                getActivity().runOnUiThread(()-> {
                     dismiss();
                     ((CheckoutFragment) fm).setDiscount(Float.parseFloat(_binding.partialAmountTextView.getEditText().getText().toString()), paymentType);
-                });
+               });
+
             }else if (response[0] == '0'){
                 getActivity().runOnUiThread(()->{
                     Toast.makeText(getContext(),"Payment Declined",Toast.LENGTH_SHORT).show();
+                    dismiss();
                 });
             }else {
                 getActivity().runOnUiThread(()->{
-                    Toast.makeText(getContext(),"Unknown Response",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"Unknown Response from Payment: "+ response[0],Toast.LENGTH_SHORT).show();
+                    dismiss();
                 });
             }
+
 
         }catch (Exception e){
             getActivity().runOnUiThread(()->{
                 Toast.makeText(getContext(),"Request timeout",Toast.LENGTH_SHORT).show();
+                dismiss();
             });
         }
 
-        dismiss();
+
     }
 
 

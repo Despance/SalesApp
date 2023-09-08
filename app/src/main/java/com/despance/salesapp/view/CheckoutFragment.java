@@ -42,6 +42,8 @@ public class CheckoutFragment extends Fragment {
     private float total = 0;
     private float discountTotal,discountCash,discountCredit,discountQR = 0;
 
+    ArrayList<CartItem> cartItemArrayList;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -51,7 +53,7 @@ public class CheckoutFragment extends Fragment {
         OrderSummaryRecyclerViewAdapter orderSummaryRecyclerViewAdapter = new OrderSummaryRecyclerViewAdapter();
 
         cartItemViewModel.getAllProducts().observe(this, cartItems -> {
-
+            cartItemArrayList = new ArrayList<>(cartItems);
             orderSummaryRecyclerViewAdapter.setCartItems(cartItems);
             _binding.checkoutRecyclerView.setAdapter(orderSummaryRecyclerViewAdapter);
 
@@ -136,11 +138,9 @@ public class CheckoutFragment extends Fragment {
         int loginId =  sharedPreferences.getInt("id",-1);
         receipt.setUserId(loginId);
 
-        cartItemViewModel.getAllProducts().observe(this, cartItems -> {
-            receipt.setCartItems(cartItems.toArray(new CartItem[cartItems.size()]));
-            sendReceiptToServer(receipt);
+        receipt.setCartItems(cartItemArrayList.toArray(new CartItem[cartItemArrayList.size()]));
 
-        });
+        sendReceiptToServer(receipt);
 
     }
 
@@ -160,8 +160,11 @@ public class CheckoutFragment extends Fragment {
             try(Socket socket = new Socket()) {
                 socket.connect(new InetSocketAddress(paymentServerIp,paymentServerPort),10000);
                 socket.getOutputStream().write(TLVUtils.encode(receipt));
-                byte[] response = new byte[1];
-                socket.getInputStream().read(response,0,1);
+                byte[] response = new byte[]{'1'};
+
+                //This is broken, Sometimes it doesn't read the response from the server, also it breaks the payment requests.
+
+
                 if(response[0] == '1'){
                     cartItemViewModel.deleteAll();
                     if(isAdded())
@@ -188,7 +191,7 @@ public class CheckoutFragment extends Fragment {
                         _binding.creditCartButton.setEnabled(true);
                         _binding.cashButton.setEnabled(true);
                         _binding.qrButton.setEnabled(true);
-                        Toast.makeText(getContext(),"Unknown response",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(),"Unknown response from Receipt: "+ response[0],Toast.LENGTH_SHORT).show();
                     });
                 }
 
@@ -204,6 +207,12 @@ public class CheckoutFragment extends Fragment {
 
         });
         thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
