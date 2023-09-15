@@ -1,4 +1,4 @@
-package com.despance.salesapp.data;
+package com.despance.salesapp.modal;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,11 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+
+import com.despance.salesapp.modal.Product.Product;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class ProductDBHelper extends SQLiteOpenHelper {
 
+    //!!!!!!!!!!!!!!!!!!!!DEPRECATED!!!!!!!!!!!!!!!!!!!!!!!!
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "productManager";

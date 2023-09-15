@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
+    android:label="Cart"
     app:startDestination="@id/LoginFragment">
 
     <fragment
         android:id="@+id/LoginFragment"
-        android:name="com.despance.salesapp.fragments.LoginFragment"
+        android:name="com.despance.salesapp.view.LoginFragment"
         android:label="Login"
         tools:layout="@layout/fragment_login">
 
@@ -17,12 +18,67 @@
     </fragment>
     <fragment
         android:id="@+id/ProductFragment"
-        android:name="com.despance.salesapp.fragments.ProductFragment"
+        android:name="com.despance.salesapp.view.ProductFragment"
         android:label="Products"
         tools:layout="@layout/fragment_product">
 
         <action
             android:id="@+id/product_to_login"
             app:destination="@id/LoginFragment" />
+        <action
+            android:id="@+id/action_ProductFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_ProductFragment_to_adminFragment"
+            app:destination="@id/adminFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.despance.salesapp.view.CartFragment"
+        android:label="Cart 🛒"
+        tools:layout="@layout/fragment_cart">
+        <action
+            android:id="@+id/action_cartFragment_to_ProductFragment"
+            app:destination="@id/ProductFragment" />
+        <action
+            android:id="@+id/action_cartFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.despance.salesapp.view.CheckoutFragment"
+        android:label="Checkout"
+        tools:layout="@layout/fragment_checkout">
+        <action
+            android:id="@+id/action_checkoutFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_checkoutFragment_to_ProductFragment"
+            app:destination="@id/ProductFragment" />
+        <action
+            android:id="@+id/action_checkoutFragment_to_receiptRecievedFragment"
+            app:destination="@id/receiptRecievedFragment"
+            app:popUpTo="@id/ProductFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/adminFragment"
+        android:name="com.despance.salesapp.view.AdminFragment"
+        android:label="fragment_admin"
+        tools:layout="@layout/fragment_admin" >
+        <action
+            android:id="@+id/action_adminFragment_to_ProductFragment"
+            app:destination="@id/ProductFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/receiptRecievedFragment"
+        android:name="com.despance.salesapp.view.ReceiptRecievedFragment"
+        android:label="Receipt Sent"
+        tools:layout="@layout/fragment_receipt_recieved">
+        <action
+            android:id="@+id/action_receiptRecievedFragment_to_ProductFragment"
+            app:destination="@id/ProductFragment"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>
